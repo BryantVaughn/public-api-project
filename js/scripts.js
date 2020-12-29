@@ -4,6 +4,12 @@ const galleryDiv = document.getElementById('gallery');
 const randomUsers = [];
 
 // Fetch functions
+
+/**
+ * Makes a request to the passed url and parses the json response.
+ * @param  {string} url - URL string of API endpoint.
+ * @return {object} Returns JSON object of API response.
+ */
 async function fetchData(url) {
 	try {
 		const res = await fetch(url);
@@ -13,6 +19,11 @@ async function fetchData(url) {
 	}
 }
 
+/**
+ * Uses fetchData function to make API call then extracts the array of
+ * users received from the Random User API to build the user cards.
+ * @param {string} url - URL string of API endpoint.
+ */
 async function getRandomUsers(url) {
 	const data = await fetchData(url);
 	const users = data.results;
@@ -20,6 +31,11 @@ async function getRandomUsers(url) {
 }
 
 // Generate HTML pieces
+
+/**
+ * Creates a card for each user and appends it to the gallery.
+ * @param {Array} users - An array of user objects retrieved from API.
+ */
 function generateUserCards(users) {
 	users.forEach((user, idx) => {
 		user.shown = true;
@@ -31,6 +47,12 @@ function generateUserCards(users) {
 	});
 }
 
+/**
+ * Builds the data pieces of each user card such as name, email, location and image.
+ * @param {DOMElement} parentElement - Parent element that data is associated with.
+ * @param {object}     user - User object containing necessary data.
+ * @param {string}     imgSize - Reference to size of image to be used from user.
+ */
 function generateMainData(parentElement, user, imgSize) {
 	// Create elements that make up each employee card
 	const { picture, name, email, location } = user;
@@ -68,6 +90,6 @@ function appendItems(parentElement, itemsToAppend) {
 	itemsToAppend.forEach((item) => parentElement.appendChild(item));
 }
 
-function formatLocation(location) {}
+function formatLocation(state) {}
 
 getRandomUsers(usersUrl);
