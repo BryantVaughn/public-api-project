@@ -38,6 +38,14 @@ function appendItems(parentElement, itemsToAppend) {
 }
 
 /**
+ * Clears all inner HTML from a DOM element.
+ * @param {DOMElement} element - Element from DOM.
+ */
+function clearElement(element) {
+	element.innerHTML = '';
+}
+
+/**
  * Formats a phone number to follow the '(xxx) xxx-xxxx' format.
  * @param  {string} phone - Phone number string.
  * @return {string} Returns either a formatted string, or the original string.

@@ -132,7 +132,7 @@ function generateOverlay(user) {
 
 	// Create modal components
 	const closeBtn = createElement('button', 'modal-close-btn');
-	const closeText = createElement('strong', null, 'X');
+	const closeText = createElement('strong', 'btn-text', 'X');
 	closeBtn.type = 'button';
 	closeBtn.id = 'modal-close-btn';
 	appendItems(closeBtn, [closeText]);
@@ -144,6 +144,7 @@ function generateOverlay(user) {
 	appendItems(modalContainer, [modal]);
 
 	// Append modal container to DOM
+	addModalListener(modalContainer);
 	galleryDiv.insertAdjacentElement('afterend', modalContainer);
 }
 
@@ -163,9 +164,33 @@ function handleUserClick(evt) {
 	generateOverlay(randomUsers[overlayView]);
 }
 
+/**
+ * Clears and removes modal element from DOM.
+ * @param {DOMElement} modalEl - Modal container element.
+ */
+function removeModal(modalEl) {
+	clearElement(modalEl);
+	modalEl.parentNode.removeChild(modalEl);
+}
+
 // Event listeners
+
 document.addEventListener('DOMContentLoaded', () => {
 	getRandomUsers(usersUrl);
 });
 
 galleryDiv.addEventListener('click', handleUserClick);
+
+function addModalListener(modalEl) {
+	modalEl.addEventListener('click', (evt) => {
+		const className = evt.target.className;
+		console.log(className);
+		if (
+			className === 'modal-container' ||
+			className === 'modal-close-btn' ||
+			className === 'btn-text'
+		) {
+			removeModal(modalEl);
+		}
+	});
+}
