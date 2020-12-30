@@ -137,15 +137,15 @@ function abbrState(inputState) {
 }
 
 /**
- * Takes an ISO string and returns a formatted 'MM/DD/YY' string.
+ * Takes an ISO string and returns a formatted 'MM/DD/YYYY' string.
  * @param  {string} dateString - ISO date string.
- * @return {string} Returns formatted MM/DD/YY string.
+ * @return {string} Returns formatted MM/DD/YYYY string.
  */
 function formatDate(dateString) {
 	const date = new Date(dateString);
 	const month = padNumWithZeros(date.getMonth() + 1, 2);
 	const day = padNumWithZeros(date.getDate(), 2);
-	const year = date.getYear();
+	const year = date.getFullYear();
 	return `${month}/${day}/${year}`;
 }
 
