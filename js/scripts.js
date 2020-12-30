@@ -125,7 +125,6 @@ function generateModalData(user) {
  * @param {object} user - User object from clicked card.
  */
 function generateOverlay(user) {
-	console.log(user);
 	// Create modal container and model elements
 	const modalContainer = createElement('div', 'modal-container');
 	const modal = createElement('div', 'modal');
@@ -184,7 +183,6 @@ galleryDiv.addEventListener('click', handleUserClick);
 function addModalListener(modalEl) {
 	modalEl.addEventListener('click', (evt) => {
 		const className = evt.target.className;
-		console.log(className);
 		if (
 			className === 'modal-container' ||
 			className === 'modal-close-btn' ||
