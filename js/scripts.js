@@ -2,6 +2,7 @@
 const usersUrl = 'https://randomuser.me/api/?results=12&nat=us';
 const galleryDiv = document.getElementById('gallery');
 const randomUsers = [];
+let overlayView;
 
 // Fetch functions
 
@@ -78,7 +79,17 @@ function generateMainData(parentElement, user, imgSize) {
 	appendItems(parentElement, cardElements);
 }
 
+function generateModal() {}
+
 // Helper functions
+
+/**
+ * Creates a new DOM element and applies classes and/or text content if specified.
+ * @param  {string} 		el - Type of element to create.
+ * @param  {string} 		className - Class to apply to new element.
+ * @param  {string} 		textContent - Text to include within element tags.
+ * @return {DOMElement} Returns the new created element.
+ */
 function createElement(el, className = null, textContent = null) {
 	const element = document.createElement(el);
 	element.className = className;
@@ -86,10 +97,35 @@ function createElement(el, className = null, textContent = null) {
 	return element;
 }
 
+/**
+ * Appends a list of DOM elements to a single parent in order.
+ * @param {DOMElement} parentElement - Element that will have items appended to it.
+ * @param {Array} 		 itemsToAppend - An array of DOM elements to append to parent.
+ */
 function appendItems(parentElement, itemsToAppend) {
 	itemsToAppend.forEach((item) => parentElement.appendChild(item));
 }
 
 function formatLocation(state) {}
 
-getRandomUsers(usersUrl);
+// Event callbacks
+
+/**
+ *
+ * @param {object} evt - Click event object.
+ */
+function handleUserClick(evt) {
+	let currNode = evt.target;
+	while (currNode.className !== 'gallery' && currNode.className !== 'card') {
+		currNode = currNode.parentNode;
+	}
+	overlayView = currNode.id;
+	generateOverlay(randomUsers[overlayView]);
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', () => {
+	getRandomUsers(usersUrl);
+});
+
+galleryDiv.addEventListener('click', handleUserClick);
