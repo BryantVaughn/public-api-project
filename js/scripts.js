@@ -43,7 +43,7 @@ function generateUserCards(users) {
 		randomUsers.push(user);
 		const card = createElement('div', 'card');
 		card.id = idx;
-		generateMainData(card, user, 'medium');
+		generateMainData(card, user);
 		appendItems(galleryDiv, [card]);
 	});
 }
@@ -52,17 +52,14 @@ function generateUserCards(users) {
  * Builds the data pieces of each user card such as name, email, location and image.
  * @param {DOMElement} parentElement - Parent element that data is associated with.
  * @param {object}     user - User object containing necessary data.
- * @param {string}     imgSize - Reference to size of image to be used from user.
  */
-function generateMainData(parentElement, user, imgSize) {
+function generateMainData(parentElement, user) {
 	// Create elements that make up each employee card
 	const { picture, name, email, location } = user;
 	const fullName = `${name.first} ${name.last}`;
 	// Create elements for card image
 	const cardImgDiv = createElement('div', 'card-img-container');
-	const img = createElement('img', 'card-img');
-	img.src = imgSize === 'medium' ? picture.medium : picture.large;
-	img.alt = 'profile picture';
+	const img = generateProfileImg(picture.medium, false);
 	appendItems(cardImgDiv, [img]);
 
 	// Create elements for card text info
@@ -79,43 +76,77 @@ function generateMainData(parentElement, user, imgSize) {
 	appendItems(parentElement, cardElements);
 }
 
-function generateModal() {}
+function generateModalData(user) {
+	const { name, picture, email, location, cell, dob } = user;
+	const fullName = `${name.first} ${name.last}`;
 
-// Helper functions
+	// Create modal info container and components
+	const infoContainer = createElement('div', 'modal-info-container');
+	const userImg = generateProfileImg(picture.large, true);
+	const userName = createElement('h3', 'modal-name cap', fullName);
+	name.id = 'name';
+	const userEmail = createElement('p', 'modal-text', email);
+	const userCity = createElement('p', 'modal-text cap', location.city);
+	const hr = createElement('hr');
+	const userCell = createElement('p', 'modal-text', formatPhoneNumber(cell));
+	const userAddress = createElement(
+		'p',
+		'modal-text',
+		streetAddressBuilder(location)
+	);
+	const userDOB = createElement(
+		'p',
+		'modal-text',
+		`Birthday: ${formatDate(dob.date)}`
+	);
 
-/**
- * Creates a new DOM element and applies classes and/or text content if specified.
- * @param  {string} 		el - Type of element to create.
- * @param  {string} 		className - Class to apply to new element.
- * @param  {string} 		textContent - Text to include within element tags.
- * @return {DOMElement} Returns the new created element.
- */
-function createElement(el, className = null, textContent = null) {
-	const element = document.createElement(el);
-	element.className = className;
-	element.textContent = textContent;
-	return element;
+	// Append components to container
+	const modalComponents = [
+		userImg,
+		userName,
+		userEmail,
+		userCity,
+		hr,
+		userCell,
+		userAddress,
+		userDOB
+	];
+	appendItems(infoContainer, modalComponents);
+	return infoContainer;
 }
 
-/**
- * Appends a list of DOM elements to a single parent in order.
- * @param {DOMElement} parentElement - Element that will have items appended to it.
- * @param {Array} 		 itemsToAppend - An array of DOM elements to append to parent.
- */
-function appendItems(parentElement, itemsToAppend) {
-	itemsToAppend.forEach((item) => parentElement.appendChild(item));
-}
+function generateOverlay(user) {
+	console.log(user);
+	// Create modal container and model elements
+	const modalContainer = createElement('div', 'modal-container');
+	const modal = createElement('div', 'modal');
 
-function formatLocation(state) {}
+	// Create modal components
+	const closeBtn = createElement('button', 'modal-close-btn');
+	const closeText = createElement('strong', null, 'X');
+	closeBtn.type = 'button';
+	closeBtn.id = 'modal-close-btn';
+	appendItems(closeBtn, [closeText]);
+	const modalData = generateModalData(user);
+
+	// Append modal components and modal to container
+	const modalComponents = [closeBtn, modalData];
+	appendItems(modal, modalComponents);
+	appendItems(modalContainer, [modal]);
+
+	// Append modal container to DOM
+	galleryDiv.insertAdjacentElement('afterend', modalContainer);
+}
 
 // Event callbacks
 
 /**
- *
+ * Handles user click on employee card.
  * @param {object} evt - Click event object.
  */
 function handleUserClick(evt) {
 	let currNode = evt.target;
+	// Set currNode as the card div if card was clicked
 	while (currNode.className !== 'gallery' && currNode.className !== 'card') {
 		currNode = currNode.parentNode;
 	}
