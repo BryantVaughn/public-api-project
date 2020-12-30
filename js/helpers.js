@@ -16,14 +16,16 @@ function createElement(el, className = null, textContent = null) {
 
 /**
  * Creates an image object and applies correct source and class.
- * @param {string}  imgSrc - Source for the image.
- * @param {boolean} isModal - True if building image for modal.
+ * @param  {string}     imgSrc - Source for the image.
+ * @param  {boolean}    isModal - True if building image for modal.
+ * @return {DOMElement} img - returns img DOM element.
  */
 function generateProfileImg(imgSrc, isModal) {
 	const imgClass = isModal ? 'modal-img' : 'card-img';
 	const img = createElement('img', imgClass);
 	img.id = 'profile picture';
 	img.src = imgSrc;
+	return img;
 }
 
 /**
