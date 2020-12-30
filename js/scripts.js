@@ -164,11 +164,10 @@ function handleUserClick(evt) {
 }
 
 /**
- * Clears and removes modal element from DOM.
+ * Removes modal element from DOM.
  * @param {DOMElement} modalEl - Modal container element.
  */
 function removeModal(modalEl) {
-	clearElement(modalEl);
 	modalEl.parentNode.removeChild(modalEl);
 }
 
@@ -188,6 +187,7 @@ function addModalListener(modalEl) {
 			className === 'modal-close-btn' ||
 			className === 'btn-text'
 		) {
+			clearElement(modalEl.firstElementChild);
 			removeModal(modalEl);
 		}
 	});
