@@ -76,6 +76,11 @@ function generateMainData(parentElement, user) {
 	appendItems(parentElement, cardElements);
 }
 
+/**
+ * Generates necessary elements with user data to display in modal.
+ * @param  {object} 		user - User object containing necessary data.
+ * @return {DOMElement} infoContainer - Returns data container for modal.
+ */
 function generateModalData(user) {
 	const { name, picture, email, location, cell, dob } = user;
 	const fullName = `${name.first} ${name.last}`;
@@ -115,6 +120,10 @@ function generateModalData(user) {
 	return infoContainer;
 }
 
+/**
+ * Generates main modal and container when employee card is clicked.
+ * @param {object} user - User object from clicked card.
+ */
 function generateOverlay(user) {
 	console.log(user);
 	// Create modal container and model elements

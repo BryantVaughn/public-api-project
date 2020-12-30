@@ -37,11 +37,21 @@ function appendItems(parentElement, itemsToAppend) {
 	itemsToAppend.forEach((item) => parentElement.appendChild(item));
 }
 
+/**
+ * Formats a phone number to follow the '(xxx) xxx-xxxx' format.
+ * @param  {string} phone - Phone number string.
+ * @return {string} Returns either a formatted string, or the original string.
+ */
 function formatPhoneNumber(phone) {
 	if (phone[4] === ')') return `${phone.slice(0, 5)} ${phone.slice(6)}`;
 	return phone;
 }
 
+/**
+ * Builds a formatted string for the user's US address.
+ * @param  {object} locationObj - Object containing user's location info.
+ * @return {string} Returns the formatted address string.
+ */
 function streetAddressBuilder(locationObj) {
 	const addNumber = locationObj.street.number;
 	const streetName = locationObj.street.name;
@@ -51,6 +61,11 @@ function streetAddressBuilder(locationObj) {
 	return `${addNumber} ${streetName} ${city}, ${state} ${postCode}`;
 }
 
+/**
+ * Searches an array of 50 states to match the abbreviation for the inputState.
+ * @param  {string} inputState - Full name of US state.
+ * @return {string} stateAbbr - Returns the abbreviation for the inputState.
+ */
 function abbrState(inputState) {
 	const states = [
 		['Arizona', 'AZ'],
@@ -113,6 +128,11 @@ function abbrState(inputState) {
 	return stateAbbr;
 }
 
+/**
+ * Takes an ISO string and returns a formatted 'MM/DD/YY' string.
+ * @param  {string} dateString - ISO date string.
+ * @return {string} Returns formatted MM/DD/YY string.
+ */
 function formatDate(dateString) {
 	const date = new Date(dateString);
 	const month = padNumWithZeros(date.getMonth() + 1, 2);
@@ -121,6 +141,11 @@ function formatDate(dateString) {
 	return `${month}/${day}/${year}`;
 }
 
+/**
+ * Pads the beginning of a number with '0's.
+ * @param {number} num - Number to be padded.
+ * @param {number} targetLength - Desired length of number.
+ */
 function padNumWithZeros(num, targetLength) {
 	return num.toString().padStart(targetLength, '0');
 }
