@@ -1,9 +1,8 @@
 // Global variables
-const usersUrl = 'https://randomuser.me/api/?results=12&nat=us';
+const employeesUrl = 'https://randomuser.me/api/?results=12&nat=us';
 const galleryDiv = document.getElementById('gallery');
 const searchContainer = document.querySelector('.search-container');
-const randomUsers = [];
-let overlayView;
+const randomEmployees = [];
 
 // Fetch functions
 
@@ -23,40 +22,41 @@ async function fetchData(url) {
 
 /**
  * Uses fetchData function to make API call then extracts the array of
- * users received from the Random User API to build the user cards.
+ * employees received from the Random User API to build the employee cards.
  * @param {string} url - URL string of API endpoint.
  */
-async function getRandomUsers(url) {
+async function getRandomEmployees(url) {
 	const data = await fetchData(url);
-	const users = data.results;
-	generateUserCards(users);
+	const employees = data.results;
+	generateEmployeeCards(employees);
 }
 
 // Generate HTML pieces
 
 /**
- * Creates a card for each user and appends it to the gallery.
- * @param {Array} users - An array of user objects retrieved from API.
+ * Creates a card for each employee and appends it to the gallery.
+ * @param {Array} employees - An array of employee objects retrieved from API.
  */
-function generateUserCards(users) {
-	users.forEach((user, idx) => {
-		user.shown = true;
-		randomUsers.push(user);
+function generateEmployeeCards(employees) {
+	employees.forEach((employee, idx) => {
+		employee.shown = true;
+		randomEmployees.push(employee);
 		const card = createElement('div', 'card');
 		card.id = idx;
-		generateMainData(card, user);
+		generateMainData(card, employee);
 		appendItems(galleryDiv, [card]);
 	});
 }
 
 /**
- * Builds the data pieces of each user card such as name, email, location and image.
+ * Builds the data pieces of each employee card such as name, email,
+ * location and image.
  * @param {DOMElement} parentElement - Parent element that data is associated with.
- * @param {object}     user - User object containing necessary data.
+ * @param {object}     employee - Employee object containing necessary data.
  */
-function generateMainData(parentElement, user) {
+function generateMainData(parentElement, employee) {
 	// Create elements that make up each employee card
-	const { picture, name, email, location } = user;
+	const { picture, name, email, location } = employee;
 	const fullName = `${name.first} ${name.last}`;
 	// Create elements for card image
 	const cardImgDiv = createElement('div', 'card-img-container');
@@ -65,12 +65,12 @@ function generateMainData(parentElement, user) {
 
 	// Create elements for card text info
 	const cardInfoDiv = createElement('div', 'card-info-container');
-	const userName = createElement('h3', 'card-name cap', fullName);
-	userName.id = 'name';
-	const userEmail = createElement('p', 'card-text', email);
-	const userLocation = createElement('p', 'card-text cap', location.city);
-	const userData = [userName, userEmail, userLocation];
-	appendItems(cardInfoDiv, userData);
+	const employeeName = createElement('h3', 'card-name cap', fullName);
+	employeeName.id = 'name';
+	const employeeEmail = createElement('p', 'card-text', email);
+	const employeeLocation = createElement('p', 'card-text cap', location.city);
+	const employeeData = [employeeName, employeeEmail, employeeLocation];
+	appendItems(cardInfoDiv, employeeData);
 
 	// Append image and data to card
 	const cardElements = [cardImgDiv, cardInfoDiv];
@@ -78,29 +78,34 @@ function generateMainData(parentElement, user) {
 }
 
 /**
- * Generates necessary elements with user data to display in modal.
- * @param  {object} 		user - User object containing necessary data.
+ * Generates necessary elements with employee data to display in modal.
+ * @param  {DOMElement} parentNode - Container that modal data will attach to.
+ * @param  {object} 		employee - Employee object containing necessary data.
  * @return {DOMElement} infoContainer - Returns data container for modal.
  */
-function generateModalData(user) {
-	const { name, picture, email, location, cell, dob } = user;
+function generateModalData(parentNode, employee) {
+	const { name, picture, email, location, cell, dob } = employee;
 	const fullName = `${name.first} ${name.last}`;
 
 	// Create modal info container and components
 	const infoContainer = createElement('div', 'modal-info-container');
-	const userImg = generateProfileImg(picture.large, true);
-	const userName = createElement('h3', 'modal-name cap', fullName);
-	name.id = 'name';
-	const userEmail = createElement('p', 'modal-text', email);
-	const userCity = createElement('p', 'modal-text cap', location.city);
+	const employeeImg = generateProfileImg(picture.large, true);
+	const employeeName = createElement('h3', 'modal-name cap', fullName);
+	employeeName.id = 'name';
+	const employeeEmail = createElement('p', 'modal-text', email);
+	const employeeCity = createElement('p', 'modal-text cap', location.city);
 	const hr = createElement('hr');
-	const userCell = createElement('p', 'modal-text', formatPhoneNumber(cell));
-	const userAddress = createElement(
+	const employeeCell = createElement(
+		'p',
+		'modal-text',
+		formatPhoneNumber(cell)
+	);
+	const employeeAddress = createElement(
 		'p',
 		'modal-text',
 		streetAddressBuilder(location)
 	);
-	const userDOB = createElement(
+	const employeeDOB = createElement(
 		'p',
 		'modal-text',
 		`Birthday: ${formatDate(dob.date)}`
@@ -108,24 +113,43 @@ function generateModalData(user) {
 
 	// Append components to container
 	const modalComponents = [
-		userImg,
-		userName,
-		userEmail,
-		userCity,
+		employeeImg,
+		employeeName,
+		employeeEmail,
+		employeeCity,
 		hr,
-		userCell,
-		userAddress,
-		userDOB
+		employeeCell,
+		employeeAddress,
+		employeeDOB
 	];
 	appendItems(infoContainer, modalComponents);
-	return infoContainer;
+	appendItems(parentNode, [infoContainer]);
+}
+
+/**
+ * Creates and appends the components of the modal scroll div to DOM.
+ * @return {DOMElement} scrollContainer - Returns container for modal scroll btns.
+ */
+function generateModalScroll() {
+	const scrollContainer = createElement('div', 'modal-btn-container');
+
+	const prevBtn = createElement('button', 'modal-prev btn', 'Prev');
+	prevBtn.id = 'modal-prev';
+	prevBtn.type = 'button';
+
+	const nextBtn = createElement('button', 'modal-next btn', 'Next');
+	nextBtn.id = 'modal-next';
+	nextBtn.type = 'button';
+
+	appendItems(scrollContainer, [prevBtn, nextBtn]);
+	return scrollContainer;
 }
 
 /**
  * Generates main modal and container when employee card is clicked.
- * @param {object} user - User object from clicked card.
+ * @param {object} employee - Employee object from clicked card.
  */
-function generateOverlay(user) {
+function generateOverlay(employee) {
 	// Create modal container and model elements
 	const modalContainer = createElement('div', 'modal-container');
 	const modal = createElement('div', 'modal');
@@ -136,12 +160,12 @@ function generateOverlay(user) {
 	closeBtn.type = 'button';
 	closeBtn.id = 'modal-close-btn';
 	appendItems(closeBtn, [closeText]);
-	const modalData = generateModalData(user);
+	generateModalData(modal, employee);
+	const modalScroll = generateModalScroll();
 
 	// Append modal components and modal to container
-	const modalComponents = [closeBtn, modalData];
-	appendItems(modal, modalComponents);
-	appendItems(modalContainer, [modal]);
+	appendItems(modal, [closeBtn]);
+	appendItems(modalContainer, [modal, modalScroll]);
 
 	// Append modal container to DOM
 	addModalListener(modalContainer);
@@ -187,8 +211,7 @@ function handleUserClick(evt) {
 	while (currNode.className !== 'gallery' && currNode.className !== 'card') {
 		currNode = currNode.parentNode;
 	}
-	overlayView = currNode.id;
-	generateOverlay(randomUsers[overlayView]);
+	generateOverlay(randomEmployees[currNode.id]);
 }
 
 /**
@@ -212,20 +235,24 @@ function filterEmployees(evt) {
 	if (evt.type === 'submit') evt.preventDefault();
 
 	const filteredEmployees = [];
-	randomUsers.forEach((user, idx) => {
+	randomEmployees.forEach((employee, idx) => {
 		const searchVal = searchInput.value.toLowerCase();
-		const fullName = `${user.name.first} ${user.name.last}`.toLowerCase();
+		const fullName = `${employee.name.first} ${employee.name.last}`.toLowerCase();
 		if (fullName.includes(searchVal)) {
-			user.shown = true;
+			employee.shown = true;
 			const idxStr = `${idx}`;
-			filteredEmployees.push({ ...user, idxStr });
+			filteredEmployees.push({ ...employee, idxStr });
 		} else {
-			user.shown = false;
+			employee.shown = false;
 		}
 	});
 	updateEmployees(filteredEmployees);
 }
 
+/**
+ * Updates the displayed employee cards based on the search input.
+ * @param {Array} employees - An array of filtered employee objects
+ */
 function updateEmployees(employees) {
 	const indexList = employees.map((employee) => employee.idxStr);
 
@@ -239,10 +266,35 @@ function updateEmployees(employees) {
 	}
 }
 
+// Modal scroll functionality
+
+/**
+ * Scrolls through shown employee cards based on direction passed in.
+ * @param {string} direction - Describes the direction to scroll.
+ */
+function scrollModal(direction) {
+	const shownEmployeeEmail = document.querySelector('.modal-text').textContent;
+	const shownEmployees = randomEmployees.filter((employee) => {
+		if (employee.shown) return employee;
+	});
+
+	let idx = findWithAttr(shownEmployees, 'email', shownEmployeeEmail);
+
+	const modal = document.querySelector('.modal');
+	modal.removeChild(modal.querySelector('.modal-info-container'));
+
+	if (direction === 'modal-prev') {
+		if (idx === 0) idx = shownEmployees.length;
+		generateModalData(modal, shownEmployees[(idx - 1) % shownEmployees.length]);
+	} else {
+		generateModalData(modal, shownEmployees[(idx + 1) % shownEmployees.length]);
+	}
+}
+
 // Event listeners
 
 document.addEventListener('DOMContentLoaded', () => {
-	getRandomUsers(usersUrl);
+	getRandomEmployees(employeesUrl);
 	generateSearchField();
 });
 
@@ -250,14 +302,16 @@ galleryDiv.addEventListener('click', handleUserClick);
 
 function addModalListener(modalEl) {
 	modalEl.addEventListener('click', (evt) => {
-		const className = evt.target.className;
+		const { target } = evt;
 		if (
-			className === 'modal-container' ||
-			className === 'modal-close-btn' ||
-			className === 'btn-text'
+			target.className === 'modal-container' ||
+			target.className === 'modal-close-btn' ||
+			target.className === 'btn-text'
 		) {
 			clearElement(modalEl.firstElementChild);
 			removeModal(modalEl);
+		} else if (target.id === 'modal-prev' || target.id === 'modal-next') {
+			scrollModal(target.id);
 		}
 	});
 }

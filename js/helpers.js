@@ -46,6 +46,21 @@ function clearElement(element) {
 }
 
 /**
+ * Searches an array of objects based on a specified attribute. Returns the index
+ * of the object with the matching attribute, or -1 if match not found.
+ * @param  {Array}  array - An array of objects to search through.
+ * @param  {string} attr - Attribute to be searched by.
+ * @param  {string} value - Value of attribute to match.
+ * @return {number} Index of object with matching attribute value (-1 if not found)
+ */
+function findWithAttr(array, attr, value) {
+	for (let i = 0; i < array.length; i++) {
+		if (array[i][`${attr}`] === value) return i;
+	}
+	return -1;
+}
+
+/**
  * Formats a phone number to follow the '(xxx) xxx-xxxx' format.
  * @param  {string} phone - Phone number string.
  * @return {string} Returns either a formatted string, or the original string.
