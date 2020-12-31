@@ -1,6 +1,7 @@
 // Global variables
 const usersUrl = 'https://randomuser.me/api/?results=12&nat=us';
 const galleryDiv = document.getElementById('gallery');
+const searchContainer = document.querySelector('.search-container');
 const randomUsers = [];
 let overlayView;
 
@@ -147,6 +148,33 @@ function generateOverlay(user) {
 	galleryDiv.insertAdjacentElement('afterend', modalContainer);
 }
 
+/**
+ * Builds the search field to allow for employee queries.
+ */
+function generateSearchField() {
+	// Create components of search
+	const form = createElement('form');
+	form.action = '#';
+	form.method = 'get';
+
+	const search = createElement('input', 'search-input');
+	search.type = 'search';
+	search.id = 'search-input';
+	search.placeholder = 'Search...';
+
+	const submit = createElement('input', 'search-submit');
+	submit.type = 'submit';
+	submit.value = '\ud83d\udd0d';
+	submit.id = 'search-submit';
+
+	// Append inputs and form to DOM
+	const inputs = [search, submit];
+	appendItems(form, inputs);
+	appendItems(searchContainer, [form]);
+
+	addSearchInputListener(form);
+}
+
 // Event callbacks
 
 /**
@@ -171,10 +199,51 @@ function removeModal(modalEl) {
 	modalEl.parentNode.removeChild(modalEl);
 }
 
+// Search functionality
+
+/**
+ * Filters shown employee cards based on search input value.
+ * @param {object} evt - Event object
+ */
+function filterEmployees(evt) {
+	const searchInput = document.querySelector('.search-input');
+
+	// Prevent reload on submit event
+	if (evt.type === 'submit') evt.preventDefault();
+
+	const filteredEmployees = [];
+	randomUsers.forEach((user, idx) => {
+		const searchVal = searchInput.value.toLowerCase();
+		const fullName = `${user.name.first} ${user.name.last}`.toLowerCase();
+		if (fullName.includes(searchVal)) {
+			user.shown = true;
+			const idxStr = `${idx}`;
+			filteredEmployees.push({ ...user, idxStr });
+		} else {
+			user.shown = false;
+		}
+	});
+	updateEmployees(filteredEmployees);
+}
+
+function updateEmployees(employees) {
+	const indexList = employees.map((employee) => employee.idxStr);
+
+	const employeeCards = galleryDiv.querySelectorAll('.card');
+	for (let employeeCard of employeeCards) {
+		if (!indexList.includes(employeeCard.id)) {
+			employeeCard.style.display = 'none';
+		} else {
+			employeeCard.style.display = '';
+		}
+	}
+}
+
 // Event listeners
 
 document.addEventListener('DOMContentLoaded', () => {
 	getRandomUsers(usersUrl);
+	generateSearchField();
 });
 
 galleryDiv.addEventListener('click', handleUserClick);
@@ -191,4 +260,11 @@ function addModalListener(modalEl) {
 			removeModal(modalEl);
 		}
 	});
+}
+
+function addSearchInputListener(formEl) {
+	formEl
+		.querySelector('.search-input')
+		.addEventListener('keyup', filterEmployees);
+	formEl.addEventListener('submit', filterEmployees);
 }
